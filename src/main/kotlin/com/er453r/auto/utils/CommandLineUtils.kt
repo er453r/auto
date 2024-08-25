@@ -9,6 +9,7 @@ data class Process(
     val cmd: String,
     val result: Int,
     val lines: List<Line> = emptyList(),
+    val env: Map<String, String> = emptyMap(),
 )
 
 data class Line(
@@ -44,9 +45,17 @@ private fun cmd(cmd: String, env: Map<String, String> = emptyMap()): Process {
         .environment(env)
         .execute()
 
+    val keyValue = """\+ (\w+)=(\w*).*""".toRegex()
+
+    val returnEnv = lines.map { it.line }
+        .filter { it.matches(keyValue) }
+        .map { it.destructured(keyValue) }
+        .associate { (key, value) -> key to value }
+
     return Process(
         cmd = cmd,
         result = result.exitValue,
         lines = lines,
+        env = returnEnv,
     )
 }

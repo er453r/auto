@@ -19,6 +19,7 @@ class Git(
 
     private val checkoutScript = ClassLoader.getSystemResource("scripts/checkout.sh").readText()
     private val buildScript = ClassLoader.getSystemResource("scripts/build.sh").readText()
+    private val publishScript = ClassLoader.getSystemResource("scripts/publish.sh").readText()
 
     fun clone(webhookInfo: WebhookInfo) {
         logger.info { "Checkout..." }
@@ -37,11 +38,13 @@ class Git(
 
         result.lines.forEach { logger.info { it } }
 
-        build(webhookInfo, tempDir)
+        val env = build(webhookInfo, tempDir)
+
+        publish(webhookInfo, env)
     }
 
     @OptIn(ExperimentalPathApi::class)
-    fun build(webhookInfo: WebhookInfo, workdir: Path) {
+    fun build(webhookInfo: WebhookInfo, workdir: Path):Map<String, String> {
         logger.info { "Build..." }
 
         val result = runScript(
@@ -54,6 +57,23 @@ class Git(
         )
 
         workdir.deleteRecursively()
+
+        logger.info { result.env }
+
+        result.lines.forEach { logger.info { it } }
+
+        return result.env
+    }
+
+    fun publish(webhookInfo: WebhookInfo, env:Map<String, String>) {
+        logger.info { "Publish..." }
+
+        val result = runScript(
+            script = publishScript,
+            env = env +  mapOf(
+                "DOCKER_REPO" to configuration.dockerRepo,
+            )
+        )
 
         result.lines.forEach { logger.info { it } }
     }
