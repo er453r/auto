@@ -9,3 +9,5 @@ auto:
   queue:
     delay: 5000
     interval: 10000
+  mirror-path: ${AUTO_MIRRORS_PATH:/home/mkotz/mirrors}
+  docker-repo: ci.kolektiv.dev

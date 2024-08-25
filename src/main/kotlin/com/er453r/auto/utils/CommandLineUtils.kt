@@ -22,7 +22,7 @@ fun runScript(script: String, env: Map<String, String>): Process {
     temp.writeText(script)
 
     val result = cmd(
-        cmd = "bash -x ${temp.absolutePath}",
+        cmd = "bash -eux ${temp.absolutePath}",
         env = env
     )
 

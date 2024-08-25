@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
 
-MIRROR=$(mktemp -d)
+# script inputs - REPO, REV, MIRROR_PATH, WORKDIR
+HASH=$(echo "$REPO" | md5sum | cut -d' ' -f1)
+MIRROR="$MIRROR_PATH/$HASH"
+
+# mirror update
+mkdir -p "$MIRROR"
 cd "$MIRROR" || exit
 
-git clone --mirror "$REPO" .
-git remote update
-IMAGE=$(basename -s .git `git config --get remote.origin.url`)
+if [ -d .git ]; then
+  git clone --mirror "$REPO" .
+fi
 
-CHECKOUT=$(mktemp -d)
-cd "$CHECKOUT" || exit
+git remote update
+
+# workdir
+cd "$WORKDIR" || exit
 
 git clone "$MIRROR" .
 git checkout "$REV"
-
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-TAG=$(git tag --points-at HEAD | head -n1)
-
-echo -e "IMAGE\t$IMAGE"
-echo -e  "BRANCH\t$BRANCH"
-echo -e "TAG\t$TAG"
-
-rm -rf "$MIRROR"
-rm -rf "$CHECKOUT"
