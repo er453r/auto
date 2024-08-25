@@ -53,7 +53,7 @@ class Git(
             )
         )
 
-//        workdir.deleteRecursively()
+        workdir.deleteRecursively()
 
         result.lines.forEach { logger.info { it } }
     }

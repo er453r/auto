@@ -3,7 +3,7 @@
 cd "$WORKDIR" || exit
 
 IMAGE=$(basename -s .git "$REPO")
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
+BRANCH=$(git name-rev HEAD | cut -d' ' -f2)
 TAG=$(git tag --points-at HEAD | head -n1)
 
 echo -e "IMAGE\t$IMAGE"
