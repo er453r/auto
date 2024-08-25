@@ -15,7 +15,7 @@ class QueueHandler(
         logger.info { "Found ${queues.size} queues to handle" }
     }
 
-    @Scheduled(fixedDelayString = "\${queue.delay}", initialDelayString = "\${queue.interval}")
+    @Scheduled(fixedDelayString = "\${auto.queue.delay}", initialDelayString = "\${auto.queue.interval}")
     fun handle() {
         logger.info { "Handling queues" }
 

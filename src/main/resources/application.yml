@@ -5,6 +5,7 @@ spring:
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 
-queue:
-  delay: 5000
-  interval: 10000
+auto:
+  queue:
+    delay: 5000
+    interval: 10000

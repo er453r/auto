@@ -4,3 +4,8 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+auto:
+  queue:
+    delay: 9999999
+    interval: 9999999
