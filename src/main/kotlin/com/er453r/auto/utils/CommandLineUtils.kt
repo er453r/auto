@@ -6,7 +6,6 @@ import java.io.File
 import java.time.ZonedDateTime
 
 data class Process(
-    val cmd: String,
     val result: Int,
     val lines: List<Line> = emptyList(),
     val env: Map<String, String> = emptyMap(),
@@ -53,7 +52,6 @@ private fun cmd(cmd: String, env: Map<String, String> = emptyMap()): Process {
         .associate { (key, value) -> key to value }
 
     return Process(
-        cmd = cmd,
         result = result.exitValue,
         lines = lines,
         env = returnEnv,

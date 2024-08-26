@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class WebhookController {
+class WebhookController(
+    val webhookQueue: WebhookQueue,
+) {
     private val logger = KotlinLogging.logger {}
 
     @PostMapping("webhook/{name}")
-    fun handleNotification(@PathVariable name:String, @RequestBody json: JsonNode) {
-        logger.info { "Handling notification '$name': $json" }
+    fun handleNotification(@PathVariable name: String, @RequestBody json: JsonNode) {
+        WebhookData(name, json)
+            .also { logger.info { "Handling webhook notification $it" } }
+            .let { webhookQueue.add(it) }
     }
 }

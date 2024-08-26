@@ -15,7 +15,7 @@ data class QueueItem(
     @UpdateTimestamp val lastModifiedDate: ZonedDateTime? = null,
 
     val queue: String,
-    val data: String,
+    @Lob val data: String,
 
     @Lob var details: String? = null,
 
