@@ -5,6 +5,14 @@ spring:
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 
+springdoc:
+  default-produces-media-type: application/json
+  api-docs:
+    path: /docs/api
+  swagger-ui:
+    tags-sorter: alpha
+    path: /docs/api/ui
+
 auto:
   queue:
     delay: 5000
