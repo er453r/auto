@@ -54,6 +54,6 @@ private fun cmd(cmd: String, env: Map<String, String> = emptyMap()): Process {
     return Process(
         result = result.exitValue,
         lines = lines,
-        env = returnEnv,
+        env = returnEnv + env,
     )
 }
