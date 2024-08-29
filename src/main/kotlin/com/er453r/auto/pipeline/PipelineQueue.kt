@@ -47,13 +47,14 @@ class PipelineQueue(
             val result = it.run(environment)
 
             pipeline.log += result
+            pipelineRepository.save(pipeline)
 
             environment.putAll(result.env)
         }
 
         workDir.toFile().deleteRecursively()
 
-        logger.info { objectMapper.valueToTree<JsonNode?>(pipeline).toPrettyString() }
+        logger.debug { objectMapper.valueToTree<JsonNode?>(pipeline).toPrettyString() }
 
         logger.info { "Completed webhook data: $item" }
     }

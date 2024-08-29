@@ -20,7 +20,7 @@ class WebhookController(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    @PostMapping("webhook/{name}")
+    @PostMapping("webhooks/{name}")
     fun handleNotification(@PathVariable name: String, @RequestBody json: String) {
         logger.info { "New webhook notification: $name" }
 
