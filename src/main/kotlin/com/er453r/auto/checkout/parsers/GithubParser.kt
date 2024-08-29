@@ -1,12 +1,11 @@
-package com.er453r.auto.webhook.parsers
+package com.er453r.auto.checkout.parsers
 
-import com.er453r.auto.webhook.WebhookCheckoutInfo
-import com.er453r.auto.webhook.WebhookParser
+import com.er453r.auto.checkout.CheckoutParser
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.stereotype.Component
 
 @Component
-class GithubParser : WebhookParser {
+class GithubParser : CheckoutParser {
     override fun match(json: JsonNode) = json.toString().contains("github.com")
 
     override fun parse(json: JsonNode) = WebhookCheckoutInfo(

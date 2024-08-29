@@ -1,17 +1,32 @@
 package com.er453r.auto.pipeline
 
+import com.er453r.auto.queue.QueueItem
 import com.er453r.auto.utils.Process
+import com.fasterxml.jackson.databind.JsonNode
+import io.hypersistence.utils.hibernate.type.json.JsonType
+import jakarta.persistence.*
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.Type
+import org.hibernate.annotations.UpdateTimestamp
+import java.time.ZonedDateTime
+import java.util.*
 
-data class Pipeline (
-    val results: MutableList<Process> = mutableListOf()
-){
-    fun run(stages: List<Stage>, env: MutableMap<String, String>) {
-        stages.forEach{
-            val result = it.run(env)
+@Entity
+class Pipeline(
+    @Id @GeneratedValue(strategy = GenerationType.UUID) val id: UUID? = null,
+    @CreationTimestamp val createdDate: ZonedDateTime? = null,
+    @UpdateTimestamp val lastModifiedDate: ZonedDateTime? = null,
 
-            results += result
+    val name: String,
 
-            env.putAll(result.env)
-        }
-    }
-}
+    @Column(columnDefinition = "json")
+    @Type(JsonType::class)
+    val data: JsonNode,
+
+    @Column(columnDefinition = "json")
+    @Type(JsonType::class)
+    val log: MutableList<Process> = mutableListOf(),
+
+    @OneToOne
+    var queueItem: QueueItem? = null,
+)

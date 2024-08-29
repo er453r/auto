@@ -19,7 +19,7 @@ class QueueHandler(
     fun handle() {
         logger.info { "Handling queues" }
 
-        val pendingItems = queueItemRepository.findAllByStatusOrderByCreatedDateAsc(QueueItemStatus.PENDING)
+        val pendingItems = queueItemRepository.findAllByStatusOrderByCreatedDateAsc(QueueItem.Status.PENDING)
 
         logger.info { "Found ${pendingItems.size} pending items" }
 
@@ -29,10 +29,10 @@ class QueueHandler(
             try {
                 queue.handleRaw(item.data)
 
-                item.status = QueueItemStatus.DONE
+                item.status = QueueItem.Status.DONE
             }
             catch (e: Exception) {
-                item.status = QueueItemStatus.ERROR
+                item.status = QueueItem.Status.ERROR
                 item.details = e.stackTraceToString()
             }
 

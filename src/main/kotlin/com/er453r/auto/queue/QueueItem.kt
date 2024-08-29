@@ -1,23 +1,32 @@
 package com.er453r.auto.queue
 
+import com.fasterxml.jackson.databind.JsonNode
+import io.hypersistence.utils.hibernate.type.json.JsonType
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.Type
 import org.hibernate.annotations.UpdateTimestamp
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.ZonedDateTime
 import java.util.*
 
 @Entity
-@EntityListeners(AuditingEntityListener::class)
 data class QueueItem(
     @Id @GeneratedValue(strategy = GenerationType.UUID) val id: UUID? = null,
     @CreationTimestamp val createdDate: ZonedDateTime? = null,
     @UpdateTimestamp val lastModifiedDate: ZonedDateTime? = null,
 
     val queue: String,
-    @Lob val data: String,
+    @Column(columnDefinition = "json")
+    @Type(JsonType::class)
+    val data: JsonNode,
 
     @Lob var details: String? = null,
 
-    @Enumerated(EnumType.STRING) var status: QueueItemStatus = QueueItemStatus.PENDING,
-)
+    @Enumerated(EnumType.STRING) var status: Status = Status.PENDING,
+) {
+    enum class Status {
+        PENDING,
+        ERROR,
+        DONE,
+    }
+}

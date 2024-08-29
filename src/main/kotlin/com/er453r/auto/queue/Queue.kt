@@ -1,5 +1,6 @@
 package com.er453r.auto.queue
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -19,17 +20,15 @@ abstract class Queue<T : Any>(val type: KClass<T>) {
         logger.info { "Created queue $name" }
     }
 
-    fun add(item: T) {
-        queueItemRepository.save(
-            QueueItem(
-                queue = name,
-                data = objectMapper.writeValueAsString(item),
-            )
+    fun add(item: T) = queueItemRepository.save(
+        QueueItem(
+            queue = name,
+            data = objectMapper.valueToTree(item),
         )
-    }
+    )
 
-    fun handleRaw(item: String) {
-        handle(objectMapper.readValue(item, type.java))
+    fun handleRaw(item: JsonNode) {
+        handle(objectMapper.treeToValue(item, type.java))
     }
 
     abstract fun handle(item: T)

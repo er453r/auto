@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface QueueItemRepository : JpaRepository<QueueItem, UUID> {
-    fun findAllByStatusOrderByCreatedDateAsc(status: QueueItemStatus): List<QueueItem>
+    fun findAllByStatusOrderByCreatedDateAsc(status: QueueItem.Status): List<QueueItem>
 }

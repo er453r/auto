@@ -1,4 +1,4 @@
-package com.er453r.auto.queue
+package com.er453r.auto.pipeline
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("queue")
-class QueueItemController(
-    val queueItemRepository: QueueItemRepository
+class PipelineController(
+    val pipelineRepository: PipelineRepository
 ) {
     @GetMapping
-    fun getAllQueueItems(): List<QueueItem> = queueItemRepository.findAll()
+    fun list(): List<Pipeline> = pipelineRepository.findAll()
 }

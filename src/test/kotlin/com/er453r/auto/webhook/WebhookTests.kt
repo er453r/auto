@@ -1,6 +1,6 @@
 package com.er453r.auto.webhook
 
-import com.er453r.auto.webhook.parsers.GithubParser
+import com.er453r.auto.checkout.parsers.GithubParser
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging

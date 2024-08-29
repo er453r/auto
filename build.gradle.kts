@@ -27,6 +27,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.4")
     implementation("org.zeroturnaround:zt-exec:1.12")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.8.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

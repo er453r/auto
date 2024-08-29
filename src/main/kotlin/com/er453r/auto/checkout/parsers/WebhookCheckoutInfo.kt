@@ -1,4 +1,4 @@
-package com.er453r.auto.webhook
+package com.er453r.auto.checkout.parsers
 
 data class WebhookCheckoutInfo(
     val repo: String,
