@@ -27,7 +27,7 @@ internal class WebhookBuildTest {
 
         mockMvc
             .perform(
-                post("/webhook/$name")
+                post("/webhooks/$name")
                     .content(jsonNode.toString())
                     .contentType("application/json")
             )
