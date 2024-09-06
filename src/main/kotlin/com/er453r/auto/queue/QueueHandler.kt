@@ -27,6 +27,9 @@ class QueueHandler(
             val queue = queues.first { it.name == item.queue }
 
             try {
+                item.status = QueueItem.Status.PROCESSING
+                queueItemRepository.save(item)
+
                 queue.handleRaw(item.data)
 
                 item.status = QueueItem.Status.DONE

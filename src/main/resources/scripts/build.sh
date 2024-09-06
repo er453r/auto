@@ -12,7 +12,13 @@ echo -e "TAG\t$TAG"
 
 DOCKER_TAG="$IMAGE:$BRANCH"
 
-if [ -n "$TAG" ]; then
+if [[ $BRANCH == *"~"* ]]; then
+  echo "This is a commit-only build!"
+
+  echo -e "Building commit $REV...\n"
+
+  docker build --no-cache --progress=plain -t "$DOCKER_REPO/$IMAGE:$REV" .
+elif [ -n "$TAG" ]; then
   echo -e "Building tags $DOCKER_TAG, $IMAGE:$TAG...\n"
 
   docker build --progress=plain -t "$DOCKER_REPO/$DOCKER_TAG" -t "$DOCKER_REPO/$IMAGE:$TAG" .

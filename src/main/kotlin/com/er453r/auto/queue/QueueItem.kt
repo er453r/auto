@@ -26,6 +26,7 @@ data class QueueItem(
 ) {
     enum class Status {
         PENDING,
+        PROCESSING,
         ERROR,
         DONE,
     }
