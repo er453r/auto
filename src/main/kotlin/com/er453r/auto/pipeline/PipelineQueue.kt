@@ -52,8 +52,6 @@ class PipelineQueue(
                 else
                     pipeline.log += process
 
-                println("log update!!!!")
-
                 pipelineRepository.saveAndFlush(pipeline)
             }
 
