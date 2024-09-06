@@ -10,12 +10,13 @@ class PublishStage : Stage {
 
     private val checkoutScript = ClassLoader.getSystemResource("scripts/publish.sh").readText()
 
-    override fun run(environment: Map<String, String>): Process {
+    override fun run(environment: Map<String, String>, live:(Process) -> Unit): Process {
         logger.info { "Publish..." }
 
         return runScript(
             script = checkoutScript,
             env = environment,
+            live = live,
         )
     }
 }

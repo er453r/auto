@@ -17,7 +17,7 @@ if [[ $BRANCH == *"~"* ]]; then
 
   echo -e "Building commit $REV...\n"
 
-  docker build --no-cache --progress=plain -t "$DOCKER_REPO/$IMAGE:$REV" .
+  docker build --progress=plain -t "$DOCKER_REPO/$IMAGE:$REV" .
 elif [ -n "$TAG" ]; then
   echo -e "Building tags $DOCKER_TAG, $IMAGE:$TAG...\n"
 

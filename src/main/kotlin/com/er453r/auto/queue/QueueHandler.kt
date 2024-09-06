@@ -28,7 +28,7 @@ class QueueHandler(
 
             try {
                 item.status = QueueItem.Status.PROCESSING
-                queueItemRepository.save(item)
+                queueItemRepository.saveAndFlush(item)
 
                 queue.handleRaw(item.data)
 

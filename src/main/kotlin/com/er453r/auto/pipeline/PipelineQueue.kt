@@ -43,8 +43,19 @@ class PipelineQueue(
             CheckoutStage(),
             BuildStage(),
             PublishStage(),
-        ).forEach {
-            val result = it.run(environment)
+        ).forEach { stage ->
+            val result = stage.run(environment){ process ->
+                val index = pipeline.log.indexOfFirst { it.id == process.id }
+
+                if(index != -1)
+                    pipeline.log[index] = process
+                else
+                    pipeline.log += process
+
+                println("log update!!!!")
+
+                pipelineRepository.saveAndFlush(pipeline)
+            }
 
             pipeline.log += result
             pipelineRepository.save(pipeline)
