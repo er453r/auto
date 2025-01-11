@@ -1,9 +1,11 @@
 FROM ubuntu:24.04
 
+LABEL INPUTS="GIT_SSH GIT_KEY"
+LABEL NAME="Git Resource"
+LABEL DESCRIPTION="Fetches new revisions, checks them out and start a pipeline"
+
 WORKDIR /step
 
-COPY run.sh .
+COPY checkout.sh .
 
-WORKDIR /workdir
-
-CMD ["bash", "/step/run.sh"]
+CMD ["bash", "/step/checkout.sh"]

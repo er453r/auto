@@ -1,6 +1,6 @@
 package com.er453r.auto
 
-import com.github.dockerjava.core.DockerClientImpl
+import com.er453r.auto.utils.DockerUtils
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -10,12 +10,9 @@ class DockerTests {
     private val logger = KotlinLogging.logger {}
 
     @Test
-    fun `Docker Tests`() {
-        logger.info { "Docker Tests" }
+    fun `Inspect image for inputs`() {
+        val imageInfo = DockerUtils.imageInfo("git-test")
 
-        val client = DockerClientImpl.getInstance()
-
-        logger.info { client.pingCmd().exec() }
-
+        logger.info { imageInfo }
     }
 }
