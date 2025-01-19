@@ -15,4 +15,9 @@ class DockerTests {
 
         logger.info { imageInfo }
     }
+
+    @Test
+    fun `Logger test`() {
+        DockerUtils.runImage("logtest")
+    }
 }
