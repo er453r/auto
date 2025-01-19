@@ -1,4 +1,4 @@
-package com.er453r.auto.utils
+package com.er453r.auto.docker
 
 import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient

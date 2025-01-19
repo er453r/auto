@@ -1,6 +1,6 @@
 package com.er453r.auto
 
-import com.er453r.auto.utils.DockerUtils
+import com.er453r.auto.docker.DockerUtils
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
