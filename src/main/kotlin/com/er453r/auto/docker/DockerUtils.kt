@@ -44,16 +44,16 @@ class DockerUtils {
                 .withStdErr(true)
                 .withFollowStream(true)
                 .exec(
-                DockerLogCallback(
-                    onLine = { line, isError ->
-                        if (isError) {
-                            logger.error { line }
-                        } else {
-                            logger.info { line }
+                    DockerLogCallback(
+                        onLine = { line, isError ->
+                            if (isError) {
+                                logger.error { line }
+                            } else {
+                                logger.info { line }
+                            }
                         }
-                    }
+                    )
                 )
-            )
 
             sleep(60000)
 
