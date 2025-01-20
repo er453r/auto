@@ -1,10 +1,13 @@
 package com.er453r.auto.docker
 
+import com.er453r.auto.utils.destructured
 import com.github.dockerjava.api.command.CreateContainerResponse
+import com.github.dockerjava.api.model.Bind
+import com.github.dockerjava.api.model.HostConfig
+import com.github.dockerjava.api.model.Volume
 import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import io.github.oshai.kotlinlogging.KotlinLogging
-import java.lang.Thread.sleep
 import java.net.URI
 
 private val logger = KotlinLogging.logger {}
@@ -17,6 +20,8 @@ class DockerUtils {
                 .build()
         ).build()
 
+        private val ENV_REGEX = Regex("^(\\w+)=(.*)$")
+
         fun imageInfo(image: String): ImageInfo {
             val inspectResponse = CLIENT.inspectImageCmd(image).exec()
             val labels = inspectResponse.config?.labels
@@ -28,9 +33,22 @@ class DockerUtils {
             )
         }
 
-        fun runImage(image: String): String {
+        fun start(
+            image: String,
+            env: Map<String, String> = emptyMap(),
+            workdir: String? = null,
+            storage: String? = null,
+            onLine: (String, Boolean) -> Unit = { _, _ -> },
+            onCompleted: (Map<String, String>) -> Unit,
+            onError: (Map<String, String>) -> Unit,
+        ) {
             val containerResponse: CreateContainerResponse = CLIENT
                 .createContainerCmd(image)
+                .withEnv(env.toList())
+                .withHostConfig(
+                    HostConfig.newHostConfig().withBinds(
+                    listOfNotNull(workdir, storage).map { Bind(it, Volume("/$it")) }
+                ))
                 .exec()
 
             logger.info { "Created container ${containerResponse.id}" }
@@ -39,6 +57,8 @@ class DockerUtils {
 
             logger.info { "Started container ${containerResponse.id}" }
 
+            val resultEnv = env.toMutableMap()
+
             CLIENT.logContainerCmd(containerResponse.id)
                 .withStdOut(true)
                 .withStdErr(true)
@@ -46,18 +66,23 @@ class DockerUtils {
                 .exec(
                     DockerLogCallback(
                         onLine = { line, isError ->
-                            if (isError) {
-                                logger.error { line }
-                            } else {
-                                logger.info { line }
+                            if (line.matches(ENV_REGEX)) {
+                                val (key, value) = line.destructured(ENV_REGEX)
+
+                                resultEnv[key] = value
                             }
-                        }
+
+                            if (isError)
+                                logger.error { line }
+                            else
+                                logger.info { line }
+
+                            onLine(line, isError)
+                        },
+                        onCompleted = { onCompleted(resultEnv) },
+                        onError = { onError(resultEnv) },
                     )
                 )
-
-            sleep(60000)
-
-            return ""
         }
     }
 

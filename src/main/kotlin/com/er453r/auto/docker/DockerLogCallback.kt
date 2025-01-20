@@ -43,6 +43,6 @@ class DockerLogCallback(
         val line = String(frame.payload, Charsets.UTF_8)
         val isError = frame.streamType == StreamType.STDERR
 
-        onLine(line, isError)
+        onLine(line.trim(), isError)
     }
 }
