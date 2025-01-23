@@ -4,6 +4,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 
 @Entity
-class Image(
+data class Image(
     @Id val name: String,
 )

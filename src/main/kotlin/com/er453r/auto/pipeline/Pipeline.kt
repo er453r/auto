@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @Entity
-class Pipeline(
+data class Pipeline(
     @Id @GeneratedValue(strategy = GenerationType.UUID) val id: UUID? = null,
     @CreationTimestamp val createdDate: ZonedDateTime? = null,
     @UpdateTimestamp val lastModifiedDate: ZonedDateTime? = null,
