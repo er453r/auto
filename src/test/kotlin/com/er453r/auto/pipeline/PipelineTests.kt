@@ -26,7 +26,6 @@ class PipelineTests {
         imageUtils.addDefault()
 
         pipelineRepository.save(Pipeline(
-            name = "Test Pipeline",
             env = mapOf(
                 "GIT_SSH" to "git@github.com:er453r/auto.git",
                 "GIT_KEY" to "w00t",
