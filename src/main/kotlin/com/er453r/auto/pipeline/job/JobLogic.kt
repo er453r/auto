@@ -19,41 +19,49 @@ class JobLogic(
 
     fun run(
         job: Job,
-        workdir: String? = null,
     ) {
         logger.info { "Running job $job" }
 
+        val workdir = "job-${job.id}-workdir"
+
+        DockerUtils.createVolume(workdir)
+
         job.status = Job.Status.RUNNING
 
-        nextStep(job, job.env, listOf())
+        nextStep(job, job.env, listOf(), workdir)
     }
 
-    fun nextStep(job: Job, env: Map<String, String>, previousSeps: List<String>):Boolean{
+    fun nextStep(job: Job, env: Map<String, String>, previousSeps: List<String>, workdir:String):Boolean{
         // first - find first image that env satisfies all needed inputs (alphabetical, so we won't have randomness)
         imageRepository.findAll()
             .map { DockerUtils.imageInfo(it.name) }
             .filter { env.keys.containsAll(it.inputs) }
-            .filter { it.name !in previousSeps }
+            .filter { it.image !in previousSeps }
             .minByOrNull { it.name }
             ?.let { image ->
                 logger.info { "Matched image: $image" }
 
                 val step = Step(
                     job  = job,
-                    image = image.name,
+                    image = image.image,
                     env = env,
                 )
 
                 stepRepository.save(step)
 
+                val volumes = mapOf(
+                    "/var/run/docker.sock" to "/var/run/docker.sock",
+                    workdir to "/workdir",
+                )
+
                 stepLogic.run(
                     step = step,
-                    workdir = null,
+                    volumes = volumes,
                     onCompleted = {
-                        nextStep(job, it, previousSeps + step.image)
+                        nextStep(job, it, previousSeps + step.image, workdir)
                     },
                     onError = {
-                        nextStep(job, it, previousSeps + step.image)
+                        nextStep(job, it, previousSeps + step.image, workdir)
                     },
                 )
 

@@ -33,6 +33,6 @@ data class Job(
         ERROR,
     }
 
-    @OneToMany(mappedBy = )
+    @OneToMany(mappedBy = "job")
     val steps: List<Step>? = null
 }

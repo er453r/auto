@@ -12,7 +12,7 @@ class StepLogic(
 
     fun run(
         step: Step,
-        workdir: String? = null,
+        volumes: Map<String, String> = emptyMap(),
         onCompleted: (Map<String, String>) -> Unit,
         onError: (Map<String, String>) -> Unit,
     ) {
@@ -22,7 +22,7 @@ class StepLogic(
 
         DockerUtils.start(
             image = step.image,
-            workdir = workdir,
+            volumes = volumes,
             env = step.env,
             onLine = { line, isError ->
                 step.log?.add(StepLogLine(line, isError))

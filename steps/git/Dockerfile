@@ -4,6 +4,8 @@ LABEL INPUTS="GIT_SSH GIT_KEY"
 LABEL NAME="Git Resource"
 LABEL DESCRIPTION="Fetches new revisions, checks them out and starts a pipeline"
 
+RUN apt-get update && apt-get install -y git
+
 WORKDIR /step
 
 COPY checkout.sh .

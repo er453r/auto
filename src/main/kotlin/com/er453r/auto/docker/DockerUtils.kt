@@ -27,17 +27,21 @@ class DockerUtils {
             val labels = inspectResponse.config?.labels
 
             return ImageInfo(
+                image = image,
                 name = labels?.get("NAME") ?: "",
                 description = labels?.get("DESCRIPTION") ?: "",
                 inputs = labels?.get("INPUTS")?.split(" ") ?: emptyList(),
             )
         }
 
+        fun createVolume(name: String) {
+            CLIENT.createVolumeCmd().withName(name).exec()
+        }
+
         fun start(
             image: String,
             env: Map<String, String> = emptyMap(),
-            workdir: String? = null,
-            storage: String? = null,
+            volumes: Map<String, String> = emptyMap(),
             onLine: (String, Boolean) -> Unit = { _, _ -> },
             onCompleted: (Map<String, String>) -> Unit,
             onError: (Map<String, String>) -> Unit,
@@ -47,7 +51,7 @@ class DockerUtils {
                 .withEnv(env.toList())
                 .withHostConfig(
                     HostConfig.newHostConfig().withBinds(
-                    listOfNotNull(workdir, storage).map { Bind(it, Volume("/$it")) }
+                        volumes.map { Bind(it.key, Volume("/${it.value}")) }
                 ))
                 .exec()
 
@@ -87,6 +91,7 @@ class DockerUtils {
     }
 
     data class ImageInfo(
+        val image: String,
         val name: String,
         val description: String,
         val inputs: List<String>,
