@@ -1,6 +1,7 @@
 package com.er453r.auto.pipeline.job
 
 import com.er453r.auto.docker.DockerUtils
+import com.er453r.auto.image.ImageLogic
 import com.er453r.auto.image.ImageRepository
 import com.er453r.auto.pipeline.step.Step
 import com.er453r.auto.pipeline.step.StepLogic
@@ -14,6 +15,7 @@ class JobLogic(
     val imageRepository: ImageRepository,
     val stepRepository: StepRepository,
     val stepLogic: StepLogic,
+    val imageLogic: ImageLogic,
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -34,25 +36,38 @@ class JobLogic(
     fun nextStep(job: Job, env: Map<String, String>, previousSeps: List<String>, workdir:String):Boolean{
         // first - find first image that env satisfies all needed inputs (alphabetical, so we won't have randomness)
         imageRepository.findAll()
-            .map { DockerUtils.imageInfo(it.name) }
-            .filter { env.keys.containsAll(it.inputs) }
-            .filter { it.image !in previousSeps }
-            .minByOrNull { it.name }
-            ?.let { image ->
-                logger.info { "Matched image: $image" }
+            .map { Pair(it, DockerUtils.imageInfo(it.name)) }
+            .filter { (_, info) -> env.keys.containsAll(info.inputs) }
+            .filter { (_, info) -> info.image !in previousSeps }
+            .minByOrNull { (_, info) -> info.image }
+            ?.let { (image, info) ->
+                logger.info { "Matched image: $info" }
 
                 val step = Step(
                     job  = job,
-                    image = image.image,
+                    image = info.image,
                     env = env,
                 )
 
                 stepRepository.save(step)
 
-                val volumes = mapOf(
-                    "/var/run/docker.sock" to "/var/run/docker.sock",
+                val volumes = mutableMapOf(
                     workdir to "/workdir",
                 )
+
+                if(info.docker) {
+                    logger.info { "Attaching docker socket to image ${info.image}" }
+
+                    volumes += "/var/run/docker.sock" to "/var/run/docker.sock"
+                }
+
+                if(info.storage) {
+                    val volume = imageLogic.getStorage(image)
+
+                    logger.info { "Attaching storage volume $volume to image ${info.image}" }
+
+                    volumes += "/storage" to volume
+                }
 
                 stepLogic.run(
                     step = step,

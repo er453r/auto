@@ -1,5 +1,6 @@
 package com.er453r.auto.docker
 
+import com.er453r.auto.image.ImageMetadata
 import com.er453r.auto.utils.destructured
 import com.github.dockerjava.api.command.CreateContainerResponse
 import com.github.dockerjava.api.model.Bind
@@ -28,14 +29,20 @@ class DockerUtils {
 
             return ImageInfo(
                 image = image,
-                name = labels?.get("NAME") ?: "",
-                description = labels?.get("DESCRIPTION") ?: "",
-                inputs = labels?.get("INPUTS")?.split(" ") ?: emptyList(),
+                name = labels?.get(ImageMetadata.NAME.key) ?: "",
+                description = labels?.get(ImageMetadata.DESCRIPTION.key) ?: "",
+                inputs = labels?.get(ImageMetadata.INPUTS.key)?.split(" ") ?: emptyList(),
+                docker = labels?.containsKey(ImageMetadata.DOCKER.key) ?: false,
+                storage = labels?.containsKey(ImageMetadata.STORAGE.key) ?: false,
             )
         }
 
         fun createVolume(name: String) {
             CLIENT.createVolumeCmd().withName(name).exec()
+        }
+
+        fun removeVolume(name: String) {
+            CLIENT.removeVolumeCmd(name).exec()
         }
 
         fun start(
@@ -95,5 +102,7 @@ class DockerUtils {
         val name: String,
         val description: String,
         val inputs: List<String>,
+        val docker:Boolean,
+        val storage:Boolean,
     )
 }

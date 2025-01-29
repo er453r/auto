@@ -6,4 +6,5 @@ import jakarta.persistence.Id
 @Entity
 data class Image(
     @Id val name: String,
+    var storage: String? = null,
 )
