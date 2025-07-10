@@ -50,7 +50,7 @@ class JobTests {
                         "mzv219Tt0fY19pRzpyQ/Vm9lFDJCoLACC1op2trRXqE=\n" +
                         "-----END RSA PRIVATE KEY-----",
 //                "CHECKOUT" to "6d2d491", // test explicit checkout
-//                "IGNORE_LAST_COMMIT" to "true",
+                "IGNORE_LAST_COMMIT" to "true",
             ),
         )
 

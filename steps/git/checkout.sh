@@ -77,6 +77,13 @@ REVISIONS=${REVISIONS//"tag: "/""}
 REVISIONS=${REVISIONS//"origin/"/""}
 REVISIONS=${REVISIONS//" "/""}
 
+AUTHOR_NAME=$(git log --pretty=format:"%an" -n1)
+AUTHOR_EMAIL=$(git log --pretty=format:"%ae" -n1)
+AUTHOR_DATE=$(git log --pretty=format:"%aI" -n1)
+
 # outputs
 echo "CHECKOUT=$CHECKOUT"
 echo "REVISIONS=$REVISIONS"
+echo "AUTHOR_NAME=$AUTHOR_NAME"
+echo "AUTHOR_EMAIL=$AUTHOR_EMAIL"
+echo "AUTHOR_DATE=$AUTHOR_DATE"
