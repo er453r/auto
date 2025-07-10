@@ -39,6 +39,8 @@ class StepLogic(
                 onCompleted(env)
             },
             onError = { env ->
+                logger.warn { "Step $step failed!" }
+
                 step.result = env
                 step.status = Step.Status.ERROR
 

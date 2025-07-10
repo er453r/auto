@@ -7,7 +7,7 @@ import com.github.dockerjava.api.model.Bind
 import com.github.dockerjava.api.model.HostConfig
 import com.github.dockerjava.api.model.Volume
 import com.github.dockerjava.core.DockerClientBuilder
-import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
+import com.github.dockerjava.zerodep.ZerodepDockerHttpClient
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.net.URI
 
@@ -16,7 +16,7 @@ private val logger = KotlinLogging.logger {}
 class DockerUtils {
     companion object {
         private val CLIENT = DockerClientBuilder.getInstance().withDockerHttpClient(
-            ApacheDockerHttpClient.Builder()
+            ZerodepDockerHttpClient.Builder()
                 .dockerHost(URI("unix:///var/run/docker.sock"))
                 .build()
         ).build()
@@ -59,7 +59,7 @@ class DockerUtils {
                 .withHostConfig(
                     HostConfig.newHostConfig().withBinds(
                         volumes.map { Bind(it.key, Volume("/${it.value}")) }
-                ))
+                    ))
                 .exec()
 
             logger.info { "Binds ${volumes.map { Bind(it.key, Volume("/${it.value}")) }}" }
@@ -92,7 +92,16 @@ class DockerUtils {
 
                             onLine(line, isError)
                         },
-                        onCompleted = { onCompleted(resultEnv) },
+                        onCompleted = {
+                            val inspectResponse = CLIENT.inspectContainerCmd(containerResponse.id).exec()
+                            val exitCode = inspectResponse.state.exitCodeLong
+                            logger.info { "Container ${containerResponse.id} exit code: $exitCode" }
+
+                            if(exitCode != 0L)
+                                onError(resultEnv)
+                            else
+                                onCompleted(resultEnv)
+                        },
                         onError = { onError(resultEnv) },
                     )
                 )
@@ -104,7 +113,7 @@ class DockerUtils {
         val name: String,
         val description: String,
         val inputs: List<String>,
-        val docker:Boolean,
-        val storage:Boolean,
+        val docker: Boolean,
+        val storage: Boolean,
     )
 }

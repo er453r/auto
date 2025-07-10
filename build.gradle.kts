@@ -27,13 +27,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.4")
-    implementation("org.zeroturnaround:zt-exec:1.12")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.8.2")
 
-    implementation("com.github.docker-java:docker-java:3.4.1")
-    implementation("javax.xml.bind:jaxb-api:2.3.1")
-    implementation("com.github.docker-java:docker-java-transport-httpclient5:3.4.1")
+    implementation("com.github.docker-java:docker-java:3.5.3")
+    implementation("com.github.docker-java:docker-java-transport-zerodep:3.5.3")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
