@@ -33,7 +33,7 @@ class JobTests {
 
         val pipeline = Pipeline(
             env = mapOf(
-                "GIT_SSH" to "git@github.com:er453r/auto.git",
+                "GIT_SSH" to "git@github.com:er453r/autodash.git",
                 "GIT_KEY" to "-----BEGIN RSA PRIVATE KEY-----\n" +
                         "MIICXAIBAAKBgQC2l4dd2rhXEeK2dmKwEwK2TbvEfGAj/yCPdQQljQ9cQE7jHp9W\n" +
                         "dSQBMUhUhqnj3LzEim39JKGVxdKKib8723vJgcxMYThwhUGnyUV25dX67qQUZ858\n" +
@@ -49,6 +49,8 @@ class JobTests {
                         "6g4TjKXvqhv1k6KrKwJBAN61S3y34MCBDF9cI2e4b7DO/87odfU3EZXGOUQmD5B3\n" +
                         "mzv219Tt0fY19pRzpyQ/Vm9lFDJCoLACC1op2trRXqE=\n" +
                         "-----END RSA PRIVATE KEY-----",
+//                "CHECKOUT" to "6d2d491", // test explicit checkout
+//                "IGNORE_LAST_COMMIT" to "true",
             ),
         )
 

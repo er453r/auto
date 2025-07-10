@@ -34,7 +34,7 @@ class JobLogic(
     }
 
     fun nextStep(job: Job, env: Map<String, String>, previousSeps: List<String>, workdir:String):Boolean{
-        // first - find first image that env satisfies all needed inputs (alphabetical, so we won't have randomness)
+        // first - find the first image that env satisfies all necessary inputs (alphabetical, so we won't have randomness)
         imageRepository.findAll()
             .map { Pair(it, DockerUtils.imageInfo(it.name)) }
             .filter { (_, info) -> env.keys.containsAll(info.inputs) }
@@ -66,7 +66,7 @@ class JobLogic(
 
                     logger.info { "Attaching storage volume $volume to image ${info.image}" }
 
-                    volumes += "/storage" to volume
+                    volumes += volume to "/storage"
                 }
 
                 stepLogic.run(
@@ -76,6 +76,8 @@ class JobLogic(
                         nextStep(job, it, previousSeps + step.image, workdir)
                     },
                     onError = {
+                        logger.warn { "Step $step failed!" }
+
                         nextStep(job, it, previousSeps + step.image, workdir)
                     },
                 )

@@ -3,6 +3,7 @@ package com.er453r.auto.image
 import com.er453r.auto.docker.DockerUtils
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
+import java.security.MessageDigest
 import java.util.*
 
 @Component
@@ -12,7 +13,7 @@ class ImageLogic(
     private val logger = KotlinLogging.logger {}
 
     fun getStorage(image: Image): String {
-        val storageName = "storage-image-${UUID.randomUUID()}"
+        val storageName = "image-storage-${image.name.md5()}"
 
         if (image.storage == null) {
             logger.info { "Creating storage: $storageName" }
@@ -34,5 +35,13 @@ class ImageLogic(
             image.storage = null
             imageRepository.save(image)
         }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun String.md5(): String {
+        val md = MessageDigest.getInstance("MD5")
+        val digest = md.digest(this.toByteArray())
+
+        return digest.toHexString()
     }
 }

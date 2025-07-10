@@ -62,6 +62,8 @@ class DockerUtils {
                 ))
                 .exec()
 
+            logger.info { "Binds ${volumes.map { Bind(it.key, Volume("/${it.value}")) }}" }
+
             logger.info { "Created container ${containerResponse.id}" }
 
             CLIENT.startContainerCmd(containerResponse.id).exec()
